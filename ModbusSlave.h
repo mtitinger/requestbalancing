@@ -1,15 +1,21 @@
 
+#pragma once
+
 #include <cstdint>
 #include <iostream>
 #include <string>
-#include "Logger.h"
 #include <pthread.h>
 #include <chrono>
 #include <thread>
 #include <mutex>
 
+#include "Logger.h"
+#include "SystemMonitor.h"
+#include "Slot.h"
+
 using namespace std;
 using namespace std::chrono;
+
 
 class ModbusSlave
 {
@@ -18,7 +24,7 @@ class ModbusSlave
     static void *EventSource(void *tics_millisec);
 
 public:
-    ModbusSlave(uint32_t tics_millisec, uint32_t sim_duration_seconds);
+    ModbusSlave(uint32_t tics_millisec, uint32_t sim_duration_seconds, SystemMonitor* sys_mon);
     ~ModbusSlave(){};
 
 public:
@@ -27,7 +33,6 @@ public:
 
     uint32_t GetMaxTics(void) { return m_SimDurationSeconds * 1000 / m_TicsMillisec - 1; };
     uint32_t GetTicsMillisec(void) { return m_TicsMillisec; };
-
     string GetName(void) { return m_NameStr; };
 
 private:
@@ -66,4 +71,6 @@ private:
     uint16_t m_LastSlot;
 
     std::mutex m_signal_mutex;
+
+    SystemMonitor* m_sysMonPtr;
 };
