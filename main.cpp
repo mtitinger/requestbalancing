@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     uint8_t num_slaves = 1U;
     uint8_t average_requests_millisec = AVERAGE_REQUEST_DURATION;
     uint32_t tics_millisec = REFRESH_TIC_DURATION;
-    uint32_t sim_duration_seconds = 1U;
+    uint32_t sim_duration_seconds = 10U;
 
     int opt;
 
@@ -62,13 +62,16 @@ int main(int argc, char **argv)
         Slaves.push_back(slave);
 
         /* Setup offset to refresh for a "fake device" */
-        for (uint16_t j = 0U; j < sizeof(FAKE_PTE)/sizeof(fake_mapping_t); j++ )
+        for (uint16_t j = 0U; j < sizeof(DEVICE_50PERCENT)/sizeof(fake_mapping_t); j++ )
         {
-            slave->AddOffsetToCache(&FAKE_PTE[j]);
+            slave->AddOffsetToCache(&DEVICE_50PERCENT[j]);
         }
+
 
         slave->Start();
     }
+
+
 
     for (auto it = Slaves.begin(); it != Slaves.end(); ++it)
     {

@@ -20,6 +20,8 @@ private:
     uint8_t m_NbPendingRequests;
     uint16_t m_SlotIndex;
 
+public:
+
     std::vector<Offset> m_OffsetsManaged;
     std::vector<string> m_ForumIdsManaged;
 

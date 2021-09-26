@@ -48,7 +48,7 @@ public:
 
         m_OffsetsToAdd.push_back(Offset(offset));
 
-        cout << "Added to cache : @" << tmp.dump().c_str() << endl;
+      //  cout << "Added to cache : @" << tmp.dump().c_str() << endl;
     }
 
 private:
@@ -58,10 +58,10 @@ private:
         while (m_LastTic == m_CurrentTic)
         {
             /* check for new work*/
-            std::this_thread::sleep_for(milliseconds(20));
+            std::this_thread::sleep_for(milliseconds(10));
         }
 
-        m_LastTic = m_CurrentTic;
+        cout << "############################## (" << m_CurrentTic << ") ###########################" << endl;
     };
 
     /*do sleep for the duration of a tic, holding the mutex */

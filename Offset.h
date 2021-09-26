@@ -13,7 +13,9 @@ typedef struct _fm
     uint16_t refreshRate;
 } fake_mapping_t;
 
-extern fake_mapping_t FAKE_PTE[21];
+extern fake_mapping_t FAKE_PTE1[21];
+extern fake_mapping_t FAKE_PTE2[21];
+extern fake_mapping_t DEVICE_50PERCENT[18];
 
 class Offset
 {

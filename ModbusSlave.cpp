@@ -69,14 +69,9 @@ void *ModbusSlave::CacheMonitor(void *slave)
  */
 void ModbusSlave::ProcessReplies(void)
 {
-    uint16_t prev_slot = (m_CurrentTic - 1) % m_NbSlots;
+    uint16_t prev_slot = m_LastTic % m_NbSlots;
 
-    /* This is a new tick, we might have missed a slot if we take longer to process responses
-     * and setup futur requests, than allowed for the duration of a slot. In this case,
-     * the CPU load mesurement will driver the # of request down. */
-
-    /* Check for new offsets to manage */
-    m_SlotsVector[prev_slot].ClearOffets();
+    /* Process replies, presumably to the Offsets from previous slot.*/
 }
 
 /*==================================================================================
@@ -109,6 +104,32 @@ void ModbusSlave::ProcessRefresh(void)
 
         m_OffsetsToAdd.clear();
     }
+
+    /* Refresh Offsets from previous slot*/
+
+    uint16_t prev_slot = (m_LastTic) % m_NbSlots;
+    found = nullptr;
+
+    if (m_SlotsVector[prev_slot].GetManagedOffsets())
+    {
+        for (size_t i = 0U; i < m_SlotsVector[prev_slot].m_OffsetsManaged.size(); i++)
+        {
+            /**/
+            //  cout << "finding slot for new @" << m_OffsetsToAdd[i].m_OffsetValue << endl;
+            found = FindSlot(m_SlotsVector[prev_slot].m_OffsetsManaged[i], cur_slot, false /*ASAP*/);
+
+            if (nullptr == found)
+            {
+                cerr << "Could not find free slot to process " << m_SlotsVector[prev_slot].m_OffsetsManaged[i].dump().c_str() << " apply strategy so-and-so..." << endl;
+                exit(0); // TODO
+            }
+        }
+
+        m_SlotsVector[m_LastTic].ClearOffets();
+    }
+
+    /* Refresh Done */
+    m_LastTic = m_CurrentTic;
 }
 
 /*==================================================================================
@@ -126,7 +147,7 @@ Slot *ModbusSlave::FindSlot(const Offset &offset, uint16_t current_slot, bool in
     if (insert_asap)
     {
         /* start scanning from next slot onwards*/
-        start_slot_offset = 1;
+        start_slot_offset = 0;
     }
 
     for (uint16_t i = start_slot_offset; i < start_slot_offset + slot_span; i++)
@@ -149,10 +170,10 @@ Slot *ModbusSlave::FindSlot(const Offset &offset, uint16_t current_slot, bool in
             suitable_slot = &m_SlotsVector[K];
         }
 
-        if ((true == insert_asap) & (nullptr != suitable_slot))
+       /* if ((true == insert_asap) & (nullptr != suitable_slot))
         {
             break;
-        }
+        }*/
     }
 
     if (nullptr != suitable_slot)
