@@ -1,13 +1,10 @@
 #include "Slot.h"
 
-uint16_t Slot::NbSlots = 0U;
-
-Slot::Slot(/* args */)
+Slot::Slot(uint16_t index)
 {
-    m_SlotIndex = NbSlots++;
+    m_SlotIndex = index;
 }
 
 Slot::~Slot()
 {
-    NbSlots++;
 }

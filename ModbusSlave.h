@@ -16,7 +16,6 @@
 using namespace std;
 using namespace std::chrono;
 
-
 class ModbusSlave
 {
     static uint8_t m_NbSlaves;
@@ -24,7 +23,7 @@ class ModbusSlave
     static void *EventSource(void *tics_millisec);
 
 public:
-    ModbusSlave(uint32_t tics_millisec, uint32_t sim_duration_seconds, SystemMonitor* sys_mon);
+    ModbusSlave(uint32_t tics_millisec, uint32_t sim_duration_seconds, SystemMonitor *sys_mon);
     ~ModbusSlave(){};
 
 public:
@@ -35,28 +34,36 @@ public:
     uint32_t GetTicsMillisec(void) { return m_TicsMillisec; };
     string GetName(void) { return m_NameStr; };
 
+    void ProcessSlot();
+
+    void AddOffsetToCache(fake_mapping_t *offset)
+    {
+        std::lock_guard<std::mutex> lk(m_offets_mutex);
+        Offset tmp(offset);
+
+        m_OffsetsToAdd.push_back(Offset(offset));
+
+        cout << "Added to cache : @" << tmp.m_OffsetValue << " in forumID '" << tmp.m_forumId << "' with T(s)=" << tmp.m_RefreshSeconds << endl;
+    }
+
 private:
     /*Wait for event source to unlock and unlock immediately*/
     void WaitTic(void)
     {
-         while(m_LastSlot == m_CurrentSlot) {
-        /* check for new work*/
-        std::this_thread::sleep_for(milliseconds(20));
+        while (m_LastTic == m_CurrentTic)
+        {
+            /* check for new work*/
+            std::this_thread::sleep_for(milliseconds(20));
         }
 
-        m_LastSlot = m_CurrentSlot;
-
-        cout << m_NameStr.c_str() << " processing Slot " <<  m_LastSlot << endl;
+        m_LastTic = m_CurrentTic;
     };
 
     /*do sleep for the duration of a tic, holding the mutex */
     void SleepTic(void)
     {
-       // cout << "  SleepTic lock" << std::endl;
         std::this_thread::sleep_for(milliseconds(m_TicsMillisec));
-      //  m_signal_mutex.lock();
-            m_CurrentSlot++;
-       // m_signal_mutex.unlock();
+        m_CurrentTic++;
     };
 
     pthread_t m_CacheMonitorThread;
@@ -67,10 +74,15 @@ private:
     uint32_t m_TicsMillisec;
     uint32_t m_SimDurationSeconds;
 
-    uint16_t m_CurrentSlot;
-    uint16_t m_LastSlot;
+    uint16_t m_LastTic;
+    uint16_t m_CurrentTic; /* just a trick to ismulate an event source */
 
-    std::mutex m_signal_mutex;
+    std::mutex m_offets_mutex;
 
-    SystemMonitor* m_sysMonPtr;
+    SystemMonitor *m_sysMonPtr;
+
+    std::vector<Slot> m_SlotsVector;
+
+    std::vector<Offset> m_OffsetsToAdd;
+    std::vector<Offset> m_OffsetsToRemove;
 };

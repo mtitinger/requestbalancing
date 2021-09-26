@@ -9,6 +9,7 @@ add_executable(sched-sim main.cpp
     Logger.cpp
     SystemMonitor.cpp
     Slot.cpp
+    Offset.cpp
     )
 
 target_link_libraries(sched-sim pthread)

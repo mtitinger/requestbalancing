@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 /* DEfault system parameter*/
 
 #define HIGH_SPEED_DATA     1 /* seconds period*/
@@ -61,6 +60,12 @@ int main(int argc, char **argv)
     {
         ModbusSlave *slave = new ModbusSlave(tics_millisec, sim_duration_seconds, &sysMon);
         Slaves.push_back(slave);
+
+        /* Setup offset to refresh for a "fake device" */
+        for (uint16_t j = 0U; j < sizeof(FAKE_PTE)/sizeof(fake_mapping_t); j++ )
+        {
+            slave->AddOffsetToCache(&FAKE_PTE[j]);
+        }
 
         slave->Start();
     }
