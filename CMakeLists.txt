@@ -9,5 +9,5 @@ add_executable(sched-sim main.cpp
     Logger.cpp
     )
 
-target_link_libraries(sched-sim)
+target_link_libraries(sched-sim pthread)
 
