@@ -14,10 +14,19 @@ ModbusSlave::ModbusSlave()
 }
 
 
-void ModbusSlave::Run()
+void ModbusSlave::Process()
 {
-     std::cout << "Starting Runner for " << m_NameStr.c_str() << std::endl;
+     std::cout << "*";
+}
 
+void ModbusSlave::Run(uint32_t seconds_to_sim)
+{
+     std::cout << "Running " << m_NameStr.c_str() << " for " << seconds_to_sim << " (sim) seconds" << std::endl;
+
+     for (auto i=0; i< seconds_to_sim; i++)
+     {
+         Process();
+     }
 }
 
 
