@@ -39,5 +39,5 @@ public:
 public:
     uint8_t GetMaxRequestsPerSlot() { return m_MaxRequestsPerSlot; };
     uint8_t GetCurCPULoadPercent() { return m_curCPULoad; };
-    uint8_t GetefreshRateSlow() { return m_RefreshRateSlow; };
+    uint8_t GetRefreshRateSlow() { return m_RefreshRateSlow; };
 };

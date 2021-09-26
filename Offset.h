@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -14,7 +15,6 @@ typedef struct _fm
 
 extern fake_mapping_t FAKE_PTE[21];
 
-
 class Offset
 {
 public:
@@ -24,14 +24,19 @@ public:
     uint16_t m_OffsetValue;
 
 public:
-     Offset(fake_mapping_t* mapping)
-     {
+    Offset(fake_mapping_t *mapping)
+    {
         m_RefreshSeconds = mapping->refreshRate;
         m_forumId = mapping->forumId;
         m_OffsetValue = mapping->value;
-     }
+    }
 
     ~Offset(){};
+
+    string dump()
+    {
+        string ret = std::to_string(m_OffsetValue) + " in forumID '" + m_forumId + "' with T(s)=" + std::to_string(m_RefreshSeconds);
+
+        return ret;
+    };
 };
-
-

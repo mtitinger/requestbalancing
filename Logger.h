@@ -30,3 +30,5 @@ public:
 
     void Test();
 };
+
+extern Logger gLogger1;

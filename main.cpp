@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     uint8_t num_slaves = 1U;
     uint8_t average_requests_millisec = AVERAGE_REQUEST_DURATION;
     uint32_t tics_millisec = REFRESH_TIC_DURATION;
-    uint32_t sim_duration_seconds = 10U;
+    uint32_t sim_duration_seconds = 1U;
 
     int opt;
 

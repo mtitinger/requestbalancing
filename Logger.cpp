@@ -49,3 +49,7 @@ void Logger::Test()
 
     Write("Done");
 }
+
+
+Logger gLogger1("slave1-slots");
+

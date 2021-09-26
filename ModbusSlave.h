@@ -34,7 +34,12 @@ public:
     uint32_t GetTicsMillisec(void) { return m_TicsMillisec; };
     string GetName(void) { return m_NameStr; };
 
-    void ProcessSlot();
+    uint32_t GetNbSlots(void) { return m_NbSlots; };
+
+    void ProcessReplies(void);
+    void ProcessRefresh(void);
+
+    Slot *FindSlot(const Offset &offset, uint16_t current_slot, bool insert_asap);
 
     void AddOffsetToCache(fake_mapping_t *offset)
     {
@@ -43,7 +48,7 @@ public:
 
         m_OffsetsToAdd.push_back(Offset(offset));
 
-        cout << "Added to cache : @" << tmp.m_OffsetValue << " in forumID '" << tmp.m_forumId << "' with T(s)=" << tmp.m_RefreshSeconds << endl;
+        cout << "Added to cache : @" << tmp.dump().c_str() << endl;
     }
 
 private:
@@ -66,6 +71,8 @@ private:
         m_CurrentTic++;
     };
 
+    void LogCurSlot();
+
     pthread_t m_CacheMonitorThread;
     pthread_t m_EventThread;
 
@@ -76,6 +83,7 @@ private:
 
     uint16_t m_LastTic;
     uint16_t m_CurrentTic; /* just a trick to ismulate an event source */
+    uint16_t m_NbSlots;
 
     std::mutex m_offets_mutex;
 
